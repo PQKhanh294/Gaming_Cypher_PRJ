@@ -12,7 +12,7 @@ public class Computer {
     private String computerId;
     private String computerName;
     private String status; // online, offline
-    private double ratePehrHour;
+    private double raterHour;
 
     public Computer(String computerId, String computerName, String status, double ratePerHour) {
         this.computerId = computerId;
