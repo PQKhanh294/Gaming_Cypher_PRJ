@@ -1,107 +1,127 @@
-﻿CREATE Database WorkShopProject
+CREATE DATABASE Test18;
 GO
-USE [WorkShopProject]
+USE [Test18];
 GO
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Account](
-	[uID] [int] IDENTITY(1,1) NOT NULL,
-	[user] [varchar](255) NULL,
-	[pass] [varchar](255) NULL,
-	[isUser] [int] NULL,
-	[isAdmin] [int] NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[uID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Cart](
-	[AccountID] [int] NULL,
-	[ProductID] [int] NULL,
-	[Amount] [int] NULL
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Category]    Script Date: 12/28/2020 5:52:31 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Category](
-	[cid] [int] NOT NULL,
-	[cname] [nvarchar](50) NOT NULL,
- CONSTRAINT [PK_Category] PRIMARY KEY CLUSTERED 
-(
-	[cid] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[product]    Script Date: 12/28/2020 5:52:31 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[product](
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[name] [nvarchar](max) NULL,
-	[image] [nvarchar](max) NULL,
-	[price] [money] NULL,
-	[title] [nvarchar](max) NULL,
-	[description] [nvarchar](max) NULL,
-	[cateID] [int] NULL,
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-SET IDENTITY_INSERT [dbo].[Account] ON 
 
-INSERT INTO [dbo].[Account] ([uID], [user], [pass], [isUser], [isAdmin]) VALUES 
-(1, N'Minh', N'147', 0, 1),
-(2, N'Khanh', N'147', 0, 1),
-(3, N'Bach', N'147', 0, 1),
-(4, N'Hai', N'147', 0, 1),
-(5, N'Phuc', N'147', 0, 1),
-(6, N'Forseken', N'123', 1, 0),
-(7, N'Something', N'123', 1, 0),
-(8, N'Jingg', N'123', 1, 0),
-(9, N'Davai', N'123', 1, 0),
-(10, N'Mindfreak', N'123', 1, 0);
-SET IDENTITY_INSERT [dbo].[Account] OFF
-INSERT INTO [dbo].[Category] ([cid], [cname]) VALUES 
-(1, N'Món Chính'),
-(2, N'Nước Giải Khát'),
-(3, N'Đồ Ăn Vặt'),
-(4, N'Combo Giờ Chơi');
-SET IDENTITY_INSERT [dbo].[product] ON 
+-- Tạo bảng Accounts
+CREATE TABLE [dbo].[Accounts] (
+    [uID] INT IDENTITY(1,1) PRIMARY KEY,
+    [user] NVARCHAR(255) NOT NULL,
+    [pass] NVARCHAR(255) NOT NULL,
+    [email] NVARCHAR(255) NOT NULL UNIQUE,
+    [isUser] INT NOT NULL,
+    [isAdmin] INT NOT NULL
+);
+GO
 
-INSERT INTO [dbo].[product] ([id], [name], [image], [price], [title], [description], [cateID]) 
+-- Tạo bảng Categories
+CREATE TABLE [dbo].[Categories] (
+    [cID] INT IDENTITY(1,1) PRIMARY KEY,
+    [cName] NVARCHAR(50) NOT NULL UNIQUE
+);
+GO
+
+-- Tạo bảng Products
+CREATE TABLE [dbo].[Products] (
+    [ID] INT IDENTITY(1,1) PRIMARY KEY,
+    [name] NVARCHAR(255) NOT NULL,
+    [image] NVARCHAR(255) NOT NULL,
+    [price] MONEY NOT NULL,
+    [title] NVARCHAR(255) NOT NULL,
+    [description] NVARCHAR(MAX) NOT NULL,
+    [cateID] INT NULL,
+    FOREIGN KEY ([cateID]) REFERENCES [dbo].[Categories]([cID]) ON DELETE SET NULL
+);
+GO
+
+-- Chèn dữ liệu vào Accounts
+INSERT INTO [dbo].[Accounts] ([user], [pass], [email], [isUser], [isAdmin]) VALUES 
+(N'Minh', N'147', N'ducminh@gmail.com', 0, 1),
+(N'Khanh', N'147', N'quockhanh@gmail.com', 0, 1),
+(N'Bach', N'147', N'xuanbach@gmail.com', 0, 1),
+(N'Hai', N'147', N'vanhai@gmail.com', 0, 1),
+(N'Phuc', N'147', N'vanphuc@gmail.com', 0, 1),
+(N'Forseken', N'123', N'forseken@gmail.com', 1, 0),
+(N'Something', N'123', N'something@gmail.com', 1, 0),
+(N'Jingg', N'123', N'jingg@gmail.com', 1, 0),
+(N'Davai', N'123', N'davai@gmail.com', 1, 0),
+(N'Mindfreak', N'123', N'mindfreak@gmail.com', 1, 0);
+GO
+
+-- Chèn dữ liệu vào Categories
+INSERT INTO [dbo].[Categories] ([cName]) VALUES 
+(N'Foods'),
+(N'Drinks'),
+(N'Snacks'),
+(N'Combo');
+GO
+
+-- Chèn dữ liệu vào Products
+INSERT INTO [dbo].[Products] ([name], [image], [price], [title], [description], [cateID]) 
 VALUES 
-(1, N'Mì tôm nước trứng', N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVqurQpHruTKJZh9C8tRgwOvP-HTBCmoqHqA&s', 15000, N'Mì', N'Ngon', 1),
-(2, N'Cơm rang dưa bò', N'https://i-giadinh.vnecdn.net/2021/10/25/nh1-1635170791-4676-1635171165.jpg', 25000, N'Cơm', N'Ngon', 1),
-(3, N'Mì Cay', N'https://aloha.com.vn/wp-content/uploads/2023/11/my-cay-sa-dec-va-nhung-dieu-ban-co-the-chua-biet.png', 30000, N'Mì cay', N'Ngon', 1),
-(4, N'Phở', N'https://static.kinhtedothi.vn/w960/images/upload/2022/09/16/phobohanoi.jpg', 25000, N'Phở', N'Ngon', 1),
-(5, N'Bánh mì chảo', N'https://i.ytimg.com/vi/gKyUmebeE-o/maxresdefault.jpg', 30000, N'Bánh mì chảo', N'Ngon', 1),
-(6, N'Xôi thập cẩm', N'https://i.ytimg.com/vi/DAAmDnzO6MI/maxresdefault.jpg', 25000, N'Xôi thập cẩm', N'Ngon', 1),
-(7, N'Trà Tắc', N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKZi656qNO94cRFfLe4b7IzWTOQPvygDLzmA&s?width=550&height=550', 15000, N'Trà', N'Ngon', 2),
-(8, N'Trà Sữa Truyền Thống', N'https://tiemkemsuti.com/wp-content/uploads/2024/03/sp6.png?width=550&height=550', 20000, N'Trà Sữa', N'Ngon', 2),
-(9, N'Bạc xỉu', N'https://bizweb.dktcdn.net/thumb/1024x1024/100/487/455/products/bac-siu-1698982665917.jpg?v=1724205132167?width=550&height=550', 18000, N'Bạc xỉu', N'Ngon', 2),
-(10, N'Coca', N'https://product.hstatic.net/1000141988/product/nuoc_ngot_cocacola_vi_nguyen_ban_320_ml_5545f89b5d434c548a8bff6118a3ed49.jpg?width=550&height=550', 10000, N'Coca', N'Ngon', 2),
-(11, N'RockStar', N'https://www.lottemart.vn/media/catalog/product/cache/0x0/8/9/8934588712081.jpg.webp?width=550&height=550', 15000, N'RockStar', N'Ngon', 2),
-(12, N'Nước Lọc', N'https://www.lottemart.vn/media/catalog/product/cache/0x0/8/9/8934588063053-1.jpg.webp?width=550&height=550', 8000, N'Nước Lọc', N'Ngon', 2),
-(13, N'Cá Viên Chiên', N'https://sgfoods.com.vn/sites/default/files/product_images/17158645-363e-4cd6-8358-5f126d3bfb47.jpg?width=550&height=550', 20000, N'Cá Viên', N'Ngon', 3),
-(14, N'Khoai Tây Chiên', N'https://www.vegeta-chay.com/wp-content/uploads/2016/07/khoai-tay-chien.jpg?width=550&height=550', 20000, N'Khoai Tây', N'Ngon', 3),
-(15, N'Thèo Lèo', N'https://media3.scdn.vn/img4/2024/08_01/3jhUuY2MTHS6GRPng9dv_simg_de2fe0_500x500_maxb.jpg?width=550&height=550', 6000, N'Thèo Lèo', N'Ngon', 3),
-(16, N'Bánh Vỏ Sò', N'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m63hat4giebn41?width=550&height=550', 6000, N'Bánh Vỏ Sò', N'Ngon', 3),
-(17, N'Bánh Cua Hành', N'https://vn-live-01.slatic.net/p/34335799602b1073927d7e23a4745113.jpg?width=550&height=550', 6000, N'Bánh con cua', N'Ngon', 3),
-(18, N'Bánh Tráng Trộn', N'https://bizweb.dktcdn.net/thumb/large/100/393/670/files/the-nao-la-banh-trang-tron-chuan.jpg?v=1604290889159?width=550&height=550', 15000, N'Bánh Tráng Trộn', N'Vui', 3),
-(19, N'Combo Sáng Pro', N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrnGSc6Cofpl0MFjVEV8d99FNCRb5H5C8rnQ&s?width=550&height=550', 25000, N'Combo', N'Vui', 4),
-(20, N'Combo Sáng Vip', N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR564gIZd1X-8jpyGM0pcevMOsBH2JWSbH3kQHyL4i2wuLJbfSgp1ZxcekLMU48TjSttbw&usqp=CAU?width=550&height=550', 30000, N'Combo', N'Vui', 4),
-(21, N'Combo Sáng FPS', NULL, 35000, N'Combo', N'Vui', 4),
-(22, N'Combo Đêm Pro', NULL, 25000, N'Combo', N'Vui', 4),
-(23, N'Combo Đêm Vip', NULL, 30000, N'Combo', N'Vui', 4),
-(24, N'Combo Đêm FPS', NULL, 35000, N'Combo', N'Vui', 4);
-SET IDENTITY_INSERT [dbo].[product] OFF
+(N'Instant noodles with egg', N'img/food1.png', 15000, N'Noodles', N'Delicious', 1),
+(N'Yangzhou fried rice', N'img/food2.png', 20000, N'Rice', N'Tasty', 1),
+(N'Stir-fried noodles with egg', N'img/food3.png', 20000, N'Noodles', N'Delicious', 1),
+(N'Spicy noodles', N'img/food4.png', 30000, N'Spicy noodles', N'Hot and tasty', 1),
+(N'Baguette pan dish', N'img/food5.png', 30000, N'Baguette pan', N'Savory', 1),
+(N'Pho', N'img/food6.png', 25000, N'Pho', N'Traditional taste', 1),
+(N'Tac Tea', N'img/drink1.png', 15000, N'Noodles', N'Delicious', 1),
+(N'MilkTea', N'img/drink2.png', 20000, N'Rice', N'Tasty', 1),
+(N'Bac Xiu', N'img/drink3.png', 18000, N'Noodles', N'Delicious', 1),
+(N'Cocacola', N'img/drink4.png', 10000, N'Spicy noodles', N'Hot and tasty', 1),
+(N'Sting', N'img/drink5.png', 10000, N'Baguette pan', N'Savory', 1),
+(N'Water', N'img/drink6.png', 8000, N'Pho', N'Traditional taste', 1),
+(N'Instant noodles with egg', N'img/snack1.png', 15000, N'Noodles', N'Delicious', 1),
+(N'Yangzhou fried rice', N'img/snack2.png', 20000, N'Rice', N'Tasty', 1),
+(N'Stir-fried noodles with egg', N'img/snack3.png', 20000, N'Noodles', N'Delicious', 1),
+(N'Spicy noodles', N'img/snack4.png', 30000, N'Spicy noodles', N'Hot and tasty', 1),
+(N'Baguette pan dish', N'img/snack5.png', 30000, N'Baguette pan', N'Savory', 1),
+(N'Pho', N'img/snack6.png', 25000, N'Pho', N'Traditional taste', 1),
+(N'Instant noodles with egg', N'img/combo1.png', 15000, N'Noodles', N'Delicious', 1),
+(N'Yangzhou fried rice', N'img/combo2.png', 20000, N'Rice', N'Tasty', 1),
+(N'Stir-fried noodles with egg', N'img/combo3.png', 20000, N'Noodles', N'Delicious', 1),
+(N'Spicy noodles', N'img/combo4.png', 30000, N'Spicy noodles', N'Hot and tasty', 1),
+(N'Baguette pan dish', N'img/combo5.png', 30000, N'Baguette pan', N'Savory', 1),
+(N'Pho', N'img/combo6.png', 25000, N'Pho', N'Traditional taste', 1);
+GO
+CREATE TABLE [dbo].[Computers] (
+    [ID] INT IDENTITY(1,1) PRIMARY KEY,
+    [name] NVARCHAR(50) NOT NULL,
+    [zone] NVARCHAR(10) CHECK ([zone] IN (N'PRO', N'VIP', N'FPS')),
+    [status] NVARCHAR(20) CHECK ([status] IN (N'Available', N'In Use')) DEFAULT N'Available'
+);
+GO
+
+-- Chèn dữ liệu vào Computers
+INSERT INTO [dbo].[Computers] ([name], [zone], [status]) VALUES
+    (N'Computer1', N'PRO', N'Available'),
+    (N'Computer2', N'PRO', N'In Use'),
+    (N'Computer3', N'PRO', N'Available'),
+    (N'Computer4', N'PRO', N'In Use'),
+    (N'Computer5', N'PRO', N'Available'),
+    (N'Computer6', N'PRO', N'In Use'),
+    (N'Computer7', N'PRO', N'Available'),
+    (N'Computer8', N'PRO', N'In Use'),
+    (N'Computer9', N'PRO', N'Available'),
+    (N'Computer10', N'PRO', N'In Use'),
+    (N'Computer11', N'VIP', N'Available'),
+    (N'Computer12', N'VIP', N'In Use'),
+    (N'Computer13', N'VIP', N'Available'),
+    (N'Computer14', N'VIP', N'In Use'),
+    (N'Computer15', N'VIP', N'Available'),
+    (N'Computer16', N'VIP', N'In Use'),
+    (N'Computer17', N'VIP', N'Available'),
+    (N'Computer18', N'VIP', N'In Use'),
+    (N'Computer19', N'VIP', N'Available'),
+    (N'Computer20', N'VIP', N'In Use'),
+    (N'Computer21', N'FPS', N'Available'),
+    (N'Computer22', N'FPS', N'In Use'),
+    (N'Computer23', N'FPS', N'Available'),
+    (N'Computer24', N'FPS', N'In Use'),
+    (N'Computer25', N'FPS', N'Available'),
+    (N'Computer26', N'FPS', N'In Use'),
+    (N'Computer27', N'FPS', N'Available'),
+    (N'Computer28', N'FPS', N'In Use'),
+    (N'Computer29', N'FPS', N'Available'),
+    (N'Computer30', N'FPS', N'In Use');
+GO
