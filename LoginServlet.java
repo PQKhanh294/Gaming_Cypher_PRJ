@@ -88,7 +88,7 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+        String password = request.getParameter("pass");
 
         // Gọi phương thức kiểm tra tài khoản từ database
         CustomerAccount customer = CustomerAccountDAO.validateLogin(email, password);
@@ -103,7 +103,7 @@ public class LoginServlet extends HttpServlet {
             
             session.setAttribute("loggedInUser", customer);
             
-            response.sendRedirect("FruitServlet?status=success");
+            response.sendRedirect("home.jsp?status=success");
         } else {
             // Đăng nhập thất bại -> Quay lại login.jsp với thông báo lỗi
             response.sendRedirect("login.jsp?error=1");
