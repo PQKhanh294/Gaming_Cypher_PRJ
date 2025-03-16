@@ -9,11 +9,22 @@
     <script>
         function validateForm() {
             let username = document.getElementById("user-name").value.trim();
+            let email = document.getElementById("user-email").value.trim();
             let password = document.getElementById("user-pass").value;
             let repass = document.getElementById("user-repeatpass").value;
 
-            if (username === "" || password === "" || repass === "") {
+            if (username === "" || email === "" || password === "" || repass === "") {
                 alert("Vui lòng nhập đầy đủ thông tin!");
+                return false;
+            }
+
+            if (!/^\S+@\S+\.\S+$/.test(email)) {
+                alert("Email không hợp lệ!");
+                return false;
+            }
+
+            if (password.length < 6) {
+                alert("Mật khẩu phải có ít nhất 6 ký tự!");
                 return false;
             }
 
@@ -61,22 +72,27 @@
 
                 <div class="mb-3">
                     <label for="user-name" class="form-label">User Name</label>
-                    <input name="username" type="text" id="user-name" class="form-control" placeholder="Enter your username" required>
+                    <input name="username" type="text" id="user-name" class="form-control" placeholder="Nhập username" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="user-email" class="form-label">Email</label>
+                    <input name="email" type="email" id="user-email" class="form-control" placeholder="Nhập email" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="user-pass" class="form-label">Password</label>
-                    <input name="pass" type="password" id="user-pass" class="form-control" placeholder="Enter your password" required>
+                    <input name="pass" type="password" id="user-pass" class="form-control" placeholder="Nhập mật khẩu" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="user-repeatpass" class="form-label">Repeat Password</label>
-                    <input name="repass" type="password" id="user-repeatpass" class="form-control" placeholder="Confirm your password" required>
+                    <input name="repass" type="password" id="user-repeatpass" class="form-control" placeholder="Nhập lại mật khẩu" required>
                 </div>
 
-                <button class="btn btn-primary w-100" type="submit"><i class="fas fa-user-plus"></i> Sign Up</button>
+                <button class="btn btn-primary w-100" type="submit">Sign Up</button>
                 <hr>
-                <a href="login.jsp" class="btn btn-secondary w-100"><i class="fas fa-angle-left"></i> Back to Login</a>
+                <a href="home.jsp" class="btn btn-secondary w-100">Back to Home</a>
             </form>
         </div>
     </div>
