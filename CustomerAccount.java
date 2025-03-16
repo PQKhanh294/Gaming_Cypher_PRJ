@@ -1,29 +1,73 @@
 package model;
 
 public class CustomerAccount {
-    private int accountID;
-    private int customerID;
+
+    private int uID;
     private String username;
     private String password;
+    private String email;
+    private int isUser;
+    private int isAdmin;
 
-    public CustomerAccount() {}
+    public CustomerAccount() {
+    }
 
-    public CustomerAccount(int accountID, int customerID, String username, String password) {
-        this.accountID = accountID;
-        this.customerID = customerID;
+    public CustomerAccount(int uID, String username, String password, String email, int isUser, int isAdmin) {
+        this.uID = uID;
         this.username = username;
+        this.password = password;
+        this.email = email;
+        this.isUser = isUser;
+        this.isAdmin = isAdmin;
+    }
+
+    public int getuID() {
+        return uID;
+    }
+
+    public void setuID(int uID) {
+        this.uID = uID;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public int getAccountID() { return accountID; }
-    public void setAccountID(int accountID) { this.accountID = accountID; }
+    public String getEmail() {
+        return email;
+    }
 
-    public int getCustomerID() { return customerID; }
-    public void setCustomerID(int customerID) { this.customerID = customerID; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    public int getIsUser() {
+        return isUser;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public void setIsUser(int isUser) {
+        this.isUser = isUser;
+    }
+
+    public int getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(int isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
+    
 }
