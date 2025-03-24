@@ -1,32 +1,37 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package model;
 
-public class CustomerAccount {
-
-    private int uID;
+/**
+ *
+ * @author TU
+ */
+public class Account {
+    private int ID;
     private String username;
     private String password;
     private String email;
-    private int isUser;
     private int isAdmin;
 
-    public CustomerAccount() {
+    public Account() {
     }
 
-    public CustomerAccount(int uID, String username, String password, String email, int isUser, int isAdmin) {
-        this.uID = uID;
+    public Account(int ID, String username, String password, String email, int isAdmin) {
+        this.ID = ID;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.isUser = isUser;
         this.isAdmin = isAdmin;
     }
 
-    public int getuID() {
-        return uID;
+    public int getID() {
+        return ID;
     }
 
-    public void setuID(int uID) {
-        this.uID = uID;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public String getUsername() {
@@ -52,15 +57,7 @@ public class CustomerAccount {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public int getIsUser() {
-        return isUser;
-    }
-
-    public void setIsUser(int isUser) {
-        this.isUser = isUser;
-    }
-
+    
     public int getIsAdmin() {
         return isAdmin;
     }
@@ -68,6 +65,6 @@ public class CustomerAccount {
     public void setIsAdmin(int isAdmin) {
         this.isAdmin = isAdmin;
     }
-
+    
     
 }
