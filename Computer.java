@@ -2,39 +2,52 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Model;
+package model;
 
 /**
  *
- * @author Admin
+ * @author haivo
  */
+
 public class Computer {
-    private String computerId;
-    private String computerName;
-    private String status; // online, offline
-    private double raterPerHour;
+    private int id;
+    private String name;
+    private String zone;
+    private String status;
 
-    public Computer(String computerId, String computerName, String status, double ratePerHour) {
-        this.computerId = computerId;
-        this.computerName = computerName;
+    public Computer() {
+    }
+
+    public Computer(int id, String name, String zone, String status) {
+        this.id = id;
+        this.name = name;
+        this.zone = zone;
         this.status = status;
-        this.ratePerHour = ratePerHour;
     }
 
-    public String getComputerId() {
-        return computerId;
+    // Getters và Setters
+    public int getId() {
+        return id;
     }
 
-    public void setComputerId(String computerId) {
-        this.computerId = computerId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getComputerName() {
-        return computerName;
+    public String getName() {
+        return name;
     }
 
-    public void setComputerName(String computerName) {
-        this.computerName = computerName;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getZone() {
+        return zone;
+    }
+
+    public void setZone(String zone) {
+        this.zone = zone;
     }
 
     public String getStatus() {
@@ -45,12 +58,13 @@ public class Computer {
         this.status = status;
     }
 
-    public double getRatePerHour() {
-        return ratePerHour;
+    @Override
+    public String toString() {
+        return "Computer{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", zone='" + zone + '\'' +
+                ", status='" + status + '\'' +
+                '}';
     }
-
-    public void setRatePerHour(double ratePerHour) {
-        this.ratePerHour = ratePerHour;
-    }
-    
 }
