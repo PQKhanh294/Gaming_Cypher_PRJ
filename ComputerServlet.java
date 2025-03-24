@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Computer;
-import com.google.gson.Gson;
 
 @WebServlet(name = "ComputerServlet", urlPatterns = {"/ComputerServlet"})
 public class ComputerServlet extends HttpServlet {
@@ -25,32 +24,21 @@ public class ComputerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        String action = request.getParameter("action");
-
         try {
             // Cập nhật trạng thái máy tính khi nhấn "Update Status"
             computerDAO.updateExpiredBookings();
 
-            if ("getComputers".equals(action)) {
-                List<Computer> computers = computerDAO.getAllComputers();
-                System.out.println("Computers fetched for AJAX: " + computers);
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                String json = new Gson().toJson(computers);
-                response.getWriter().write(json);
-            } else {
-                List<Computer> computers = computerDAO.getAllComputers();
-                session.setAttribute("computers", computers);
-                request.setAttribute("computers", computers);
+            List<Computer> computers = computerDAO.getAllComputers();
+            session.setAttribute("computers", computers);
+            request.setAttribute("computers", computers);
 
-                String success = (String) session.getAttribute("success");
-                if (success != null) {
-                    request.setAttribute("success", success);
-                    session.removeAttribute("success");
-                }
-
-                request.getRequestDispatcher("/computers.jsp").forward(request, response);
+            String success = (String) session.getAttribute("success");
+            if (success != null) {
+                request.setAttribute("success", success);
+                session.removeAttribute("success");
             }
+
+            request.getRequestDispatcher("/computers.jsp").forward(request, response);
         } catch (Exception e) {
             throw new ServletException("Error processing GET request: " + e.getMessage(), e);
         }
