@@ -16,7 +16,7 @@ import java.io.PrintWriter;
 import java.util.List;
 import model.Computer;
 
-@WebServlet(name="BookingServlet", urlPatterns={"/BookingServlet"})
+@WebServlet(name = "BookingServlet", urlPatterns = {"/BookingServlet"})
 public class BookingServlet extends HttpServlet {
     private ComputerDAO computerDAO;
 
@@ -57,55 +57,25 @@ public class BookingServlet extends HttpServlet {
             String startTime = request.getParameter("startTime");
             String endTime = request.getParameter("endTime");
             String purpose = request.getParameter("purpose");
+            int userId = ((model.Account) request.getSession().getAttribute("acc")).getID();
 
-            // Kiểm tra booking trong quá khứ
-            java.time.LocalDateTime currentDateTime = java.time.LocalDateTime.now();
-            java.time.LocalDate currentDate = currentDateTime.toLocalDate();
-            java.time.LocalTime currentTime = currentDateTime.toLocalTime();
-
-            java.time.LocalDate inputDate = java.time.LocalDate.parse(bookingDate);
-            java.time.LocalTime inputStartTime = java.time.LocalTime.parse(startTime);
-
-            if (inputDate.isBefore(currentDate) || 
-                (inputDate.equals(currentDate) && inputStartTime.isBefore(currentTime))) {
-                request.setAttribute("error", "Cannot book in the past!");
+            // Kiểm tra tính hợp lệ của thời gian
+            String timeError = computerDAO.checkBookingTimeValidity(bookingDate, startTime, endTime);
+            if (timeError != null) {
+                request.setAttribute("error", timeError);
                 request.getRequestDispatcher("/computers.jsp").forward(request, response);
                 return;
             }
 
             // Kiểm tra xung đột thời gian
-            DBConnect dbConnect = new DBConnect();
-            try (Connection conn = dbConnect.getConnection()) {
-                String checkSql = "SELECT COUNT(*) FROM Bookings WHERE computerID = ? AND bookingDate = ? " +
-                                 "AND ((startTime < ? AND endTime > ?) OR (startTime < ? AND endTime > ?))";
-                try (PreparedStatement checkPs = conn.prepareStatement(checkSql)) {
-                    checkPs.setInt(1, computerId);
-                    checkPs.setString(2, bookingDate);
-                    checkPs.setString(3, endTime);
-                    checkPs.setString(4, startTime);
-                    checkPs.setString(5, startTime);
-                    checkPs.setString(6, endTime);
-                    ResultSet rs = checkPs.executeQuery();
-                    if (rs.next() && rs.getInt(1) > 0) {
-                        request.setAttribute("error", "Time slot conflicts with an existing booking!");
-                        request.getRequestDispatcher("/computers.jsp").forward(request, response);
-                        return;
-                    }
-                }
-
-                // Lưu booking
-                String sql = "INSERT INTO Bookings (computerID, bookingDate, startTime, endTime, purpose, status) " +
-                            "VALUES (?, ?, ?, ?, ?, ?)";
-                try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                    ps.setInt(1, computerId);
-                    ps.setString(2, bookingDate);
-                    ps.setString(3, startTime);
-                    ps.setString(4, endTime);
-                    ps.setString(5, purpose != null ? purpose : "");
-                    ps.setString(6, "Confirmed");
-                    ps.executeUpdate();
-                }
+            if (computerDAO.checkTimeConflict(computerId, bookingDate, startTime, endTime)) {
+                request.setAttribute("error", "Time slot conflicts with an existing booking!");
+                request.getRequestDispatcher("/computers.jsp").forward(request, response);
+                return;
             }
+
+            // Lưu booking
+            computerDAO.saveBooking(computerId, bookingDate, startTime, endTime, purpose, userId);
 
             // Làm mới danh sách máy tính
             List<Computer> computers = computerDAO.getAllComputers();
