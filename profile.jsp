@@ -66,6 +66,15 @@
                                 <button class="btn btn-warning action-btn" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
                                     <i class="fas fa-key"></i> Change Password
                                 </button>
+
+                                <!-- Only show Delete Account button for admin users -->
+                                <c:if test="${sessionScope.acc.isAdmin == 1}">
+                                    <div class="profile-actions">
+                                            <button class="btn btn-danger action-btn" data-bs-toggle="modal" data-bs-target="#deleteUsersModal">
+                                                <i class="fas fa-trash-alt"></i> Delete Users
+                                            </button>
+                                    </div>
+                                </c:if>
                             </div>
                         </div>
                     </div>
@@ -73,7 +82,7 @@
             </div>
         </div>
 
-        Edit Profile Modal 
+        <!-- Edit Profile Modal (unchanged) -->
         <div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -102,7 +111,7 @@
             </div>
         </div>
 
-        Change Password Modal 
+        <!-- Change Password Modal (unchanged) -->
         <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -134,6 +143,99 @@
                 </div>
             </div>
         </div>
+        <!-- Delete Users Modal (New) -->
+        <c:if test="${sessionScope.acc.isAdmin == 1}">
+            <div class="modal fade" id="deleteUsersModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><i class="fas fa-trash-alt"></i> Delete Users</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="Delete" method="post">
+                            <div class="modal-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <input type="checkbox" id="selectAll" onclick="toggleAllCheckboxes()">
+                                            </th>
+                                            <th>User ID</th>
+                                            <th>Username</th>
+                                            <th>Email</th>
+                                            <th>User Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="user" items="${userList}">
+                                            <c:if test="${user.ID != sessionScope.acc.ID}">
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" name="selectedUsers" value="${user.ID}" 
+                                                               class="user-checkbox" 
+                                                               ${user.isAdmin == 1 ? 'disabled' : ''}>
+                                                    </td>
+                                                    <td>#${user.ID}</td>
+                                                    <td>${user.username}</td>
+                                                    <td>${user.email}</td>
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${user.isAdmin == 1}">
+                                                                <span class="badge bg-danger">Administrator</span>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <span class="badge bg-primary">Gamer</span>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                </tr>
+                                            </c:if>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" name="action" value="deleteUsers" class="btn btn-danger" onclick="return confirmDelete()">
+                                    <i class="fas fa-trash-alt"></i> Delete Selected Users
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </c:if>
 
+        <script>
+            function toggleAllCheckboxes() {
+                var selectAll = document.getElementById('selectAll');
+                var checkboxes = document.getElementsByClassName('user-checkbox');
+
+                for (var i = 0; i < checkboxes.length; i++) {
+                    if (!checkboxes[i].disabled) {
+                        checkboxes[i].checked = selectAll.checked;
+                    }
+                }
+            }
+
+            function confirmDelete() {
+                var checkboxes = document.getElementsByName('selectedUsers');
+                var checked = false;
+
+                for (var i = 0; i < checkboxes.length; i++) {
+                    if (checkboxes[i].checked) {
+                        checked = true;
+                        break;
+                    }
+                }
+
+                if (!checked) {
+                    alert('Please select at least one user to delete.');
+                    return false;
+                }
+
+                return confirm('Are you sure you want to delete the selected users? This action cannot be undone.');
+            }
+        </script>
     </body>
 </html>
