@@ -7,7 +7,8 @@ package dao;
 import connect.DBConnect;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import javax.resource.cci.Connection;
+import java.util.ArrayList;
+import java.util.List;
 import model.Account;
 
 /**
@@ -40,7 +41,7 @@ public class UserDAO {
     // Phương thức để thay đổi mật khẩu
     public boolean changeUserPassword(String userId, String currentPassword, String newPassword) {
         // Kiểm tra mật khẩu hiện tại và cập nhật mật khẩu mới
-        try  {
+        try {
             conn = new DBConnect().getConnection();
             // Kiểm tra mật khẩu hiện tại
             String checkSql = "SELECT * FROM Accounts WHERE uID = ? AND pass = ?";
@@ -62,27 +63,67 @@ public class UserDAO {
         }
         return false;
     }
-    public Account getUserById(String userId) {
-    Account user = null;
-    try  {
-        
-        conn = new DBConnect().getConnection();
-        String sql = "SELECT * FROM users WHERE uID = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, userId);
-        ResultSet rs = stmt.executeQuery();
 
-        if (rs.next()) {
-            user = new Account();
-            user.setID(rs.getInt("id"));
-            user.setUsername(rs.getString("username"));
-            user.setPassword(rs.getString("password")); // Lưu ý: không nên lưu mật khẩu dưới dạng văn bản rõ ràng
-            user.setEmail(rs.getString("email"));
-            user.setIsAdmin(rs.getInt("isAdmin"));
+    public Account getUserById(String userId) {
+        Account user = null;
+        try {
+
+            conn = new DBConnect().getConnection();
+            String sql = "SELECT * FROM users WHERE uID = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                user = new Account();
+                user.setID(rs.getInt("id"));
+                user.setUsername(rs.getString("username"));
+                user.setPassword(rs.getString("password")); // Lưu ý: không nên lưu mật khẩu dưới dạng văn bản rõ ràng
+                user.setEmail(rs.getString("email"));
+                user.setIsAdmin(rs.getInt("isAdmin"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return user;
     }
-    return user;
-}
+
+    public List<Account> getAllUsers() {
+        List<Account> userList = new ArrayList<>();
+        try {
+            conn = new DBConnect().getConnection();
+            String sql = "SELECT uID, [user], email, isAdmin FROM Accounts";
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Account account = new Account();
+                account.setID(rs.getInt("uID"));
+                account.setUsername(rs.getString("user"));
+                account.setEmail(rs.getString("email"));
+                account.setIsAdmin(rs.getInt("isAdmin"));
+                userList.add(account);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return userList;
+    }
+    public int deleteUsers(String[] userIds) {
+        int deletedCount = 0;     
+        try {
+            conn = new DBConnect().getConnection();
+            // Prevent deleting admin accounts
+            String sql = "DELETE FROM Accounts WHERE uID = ? AND isAdmin = 0";
+            ps = conn.prepareStatement(sql);
+            
+            for (String userId : userIds) {
+                ps.setInt(1, Integer.parseInt(userId));
+                deletedCount += ps.executeUpdate();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }       
+        return deletedCount;
+    }
 }
