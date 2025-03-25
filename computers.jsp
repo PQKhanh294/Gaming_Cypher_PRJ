@@ -6,30 +6,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Computer List</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/computer.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/computer.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <i class="fas fa-desktop me-2"></i> Computer List
+            <i class="fas fa-desktop"></i> Computer List
         </div>
-        <div class="text-center mb-4">
-            <a href="${pageContext.request.contextPath}/home.jsp" class="btn-custom btn-back"><i class="fas fa-home"></i> Back to Home</a>
-            <a href="${pageContext.request.contextPath}/ComputerServlet" class="btn-custom btn-update"><i class="fas fa-sync-alt"></i> Update Status</a>
+        
+        <div class="text-center">
+            <a href="${pageContext.request.contextPath}/home.jsp" class="btn-custom btn-back">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+            <a href="${pageContext.request.contextPath}/ComputerServlet" class="btn-custom btn-update">
+                <i class="fas fa-sync-alt"></i> Update Status
+            </a>
         </div>
 
+        <!-- Success Message -->
         <c:if test="${not empty success}">
-            <div class="alert alert-success"><i class="fas fa-check-circle me-2"></i> ${success}</div>
-        </c:if>
-        <c:if test="${not empty error}">
-            <div class="alert alert-danger"><i class="fas fa-exclamation-triangle me-2"></i> ${error}</div>
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i> ${success}
+            </div>
         </c:if>
 
+        <!-- Error Message -->
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle"></i> ${error}
+            </div>
+        </c:if>
+
+        <!-- Computer List -->
         <c:choose>
             <c:when test="${empty computers}">
-                <div class="no-computers"><i class="fas fa-exclamation-triangle me-2"></i> No computers found.</div>
+                <div class="no-computers">
+                    <i class="fas fa-exclamation-triangle"></i> No computers found
+                </div>
             </c:when>
             <c:otherwise>
                 <div class="computer-grid">
@@ -45,7 +60,9 @@
                             <c:if test="${computer.status == 'Available'}">
                                 <form action="${pageContext.request.contextPath}/DetailBookingServlet" method="post">
                                     <input type="hidden" name="computerId" value="${computer.id}">
-                                    <button type="submit" class="btn-book"><i class="fas fa-book me-2"></i> Book Now</button>
+                                    <button type="submit" class="btn-book">
+                                        <i class="fas fa-book"></i> Book Now
+                                    </button>
                                 </form>
                             </c:if>
                         </div>
@@ -54,8 +71,5 @@
             </c:otherwise>
         </c:choose>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </body>
 </html>
