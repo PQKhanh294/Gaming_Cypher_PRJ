@@ -99,13 +99,15 @@ public class LoginServlet extends HttpServlet {
                 response.addCookie(emailCookie);
             }
             
+            HttpSession session = request.getSession();
+
+        if (a.getIsAdmin() == 1) {
             UserDAO userDAO = new UserDAO();
             List<Account> userList = userDAO.getAllUsers();  // Lấy danh sách user từ DB
-            
-            HttpSession session = request.getSession();
-            session.setAttribute("acc", a);
             session.setAttribute("userList", userList);
-            request.getRequestDispatcher("home.jsp").forward(request, response);
+        }
+        session.setAttribute("acc", a);
+        request.getRequestDispatcher("home.jsp").forward(request, response);
         }
     }
 
