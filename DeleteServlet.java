@@ -6,12 +6,16 @@
 package controller;
 
 import dao.CrudDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import model.Account;
 
 /**
  *
@@ -60,7 +64,36 @@ public class DeleteServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        String action = request.getParameter("action");
+        UserDAO userDAO = new UserDAO();
+        HttpSession session = request.getSession();
+        Account currentUser = (Account) session.getAttribute("acc");
+
+        if (currentUser == null || currentUser.getIsAdmin() != 1) {
+            request.setAttribute("errorMessage", "Unauthorized access.");
+            request.getRequestDispatcher("profile.jsp").forward(request, response);
+            return;
+        }
+
+        if ("deleteUsers".equals(action)) {
+            String[] selectedUserIds = request.getParameterValues("selectedUsers");
+            
+            if (selectedUserIds != null && selectedUserIds.length > 0) {
+                int deletedCount = userDAO.deleteUsers(selectedUserIds);
+                
+                if (deletedCount > 0) {
+                    request.setAttribute("successMessage", deletedCount + " user(s) deleted successfully.");
+                } else {
+                    request.setAttribute("errorMessage", "No users were deleted. Ensure you're not trying to delete admin accounts.");
+                }
+            } else {
+                request.setAttribute("errorMessage", "No users selected for deletion.");
+            }
+        }
+        List<Account> userList = userDAO.getAllUsers();
+        request.setAttribute("userList", userList);
+        
+        request.getRequestDispatcher("profile.jsp").forward(request, response);
     }
 
     /** 
